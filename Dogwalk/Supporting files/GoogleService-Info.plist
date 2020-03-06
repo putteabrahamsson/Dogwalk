@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>725220812550-rt99jrevi11ejjvg8viturs3a9ilu0nc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.725220812550-rt99jrevi11ejjvg8viturs3a9ilu0nc</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDfpkfnTxhXC80pYMWLsWEysaQLTmollQs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>725220812550</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>se.abrahamsson.Dogwalk</string>
+	<key>PROJECT_ID</key>
+	<string>dogwalk-new</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dogwalk-new.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:725220812550:ios:4f798b666b0a7bccc82087</string>
+	<key>DATABASE_URL</key>
+	<string>https://dogwalk-new.firebaseio.com</string>
+</dict>
+</plist>
