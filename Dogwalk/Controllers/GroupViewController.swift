@@ -29,6 +29,11 @@ class GroupViewController: UIViewController, UICollectionViewDelegate, UICollect
         ["Create a group", "Invite user"],
         ["Add a new dog", "Members"]
     ]
+    var imageArray = [
+        [UIImage.init(named: "group"), UIImage.init(named: "invite")],
+        [UIImage.init(named: "dog"), UIImage.init(named: "group")]
+    ]
+    
     var dogArray:[DogData] = []
     var members:[MemberData] = []
     
@@ -119,7 +124,7 @@ class GroupViewController: UIViewController, UICollectionViewDelegate, UICollect
         let cell = tableView.dequeueReusableCell(withIdentifier: "groupTableCell", for: indexPath) as! GroupTableViewCell
         
         //Sets the cell
-        //cell.buttonImage.image = <-- FIX
+        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
         cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
         
         return cell
@@ -270,6 +275,7 @@ class GroupViewController: UIViewController, UICollectionViewDelegate, UICollect
                 //Member is not in group, invite user.
                 self.databaseHandler.getGroupName { (result) in
                     self.databaseHandler.inviteUserToGroup(email: textField!.text!, groupName: result)
+                    self.displayMessageAlertView(title: "Succeded!", message: "An invitation were sent to \(textField!.text ?? "")", actionTitle: "OK")
                 }
             }
             

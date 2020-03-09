@@ -342,6 +342,7 @@ class DatabaseHandler{
                                 print(err.localizedDescription)
                             }
                             else{
+                                self.defaults.set(newInviteId, forKey: "groupId")
                                 self.addUserToGroup(uuid: newInviteId)
                                 completed()
                             }

@@ -127,11 +127,42 @@ class SignViewController: UIViewController, UITextFieldDelegate {
                     //Add user details to Firebase
                     self.databaseHandler.createAccount(email: self.email.text!, firstName: self.firstName.text!){
                         self.stopAnimateButton()
-                        print("Succeded creating a new account")
+                        
+                        //Login user after registration
+                        self.handleLogin()
                     }
                 }
             }
         }
+    }
+    
+    //Forgot password button tapped
+    @IBAction func forgotPassword(_ sender: Any) {
+        let alert = UIAlertController(title: "Reset password", message: "We will send a password reset to your email", preferredStyle: .alert)
+
+        //User will enter an email
+        alert.addTextField { (textField) in
+            textField.placeholder = "Enter your email"
+        }
+
+        //Reset password button tapped
+        alert.addAction(UIAlertAction(title: "Reset", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0]
+            
+            //Set textfield as lowercase
+            textField?.text = textField?.text?.lowercased()
+            
+            Auth.auth().sendPasswordReset(withEmail: textField!.text!) { (err) in
+                if let err = err{
+                    print(err.localizedDescription)
+                }
+            }
+        }))
+        
+        //Cancel button
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        self.present(alert, animated: true, completion: nil)
     }
     
     //Segment for login / register changed.

@@ -24,7 +24,11 @@ class MoreViewController: UIViewController, UITableViewDelegate, UITableViewData
         ["Invite a friend"],
         ["Change password", "Logout"]
     ]
-    var imageArray:[UIImage] = []
+    var imageArray = [
+        [UIImage.init(named: "group")],
+        [UIImage.init(named: "invite")],
+        [UIImage.init(named: "password"), UIImage.init(named: "logout")]
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +52,7 @@ class MoreViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "moreCell", for: indexPath) as! MoreTableViewCell
         
-        //cell.buttonImage.image = <-- FIX LATER
+        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
         cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
         
         return cell

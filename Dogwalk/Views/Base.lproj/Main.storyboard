@@ -1428,18 +1428,37 @@
                                     <constraint firstItem="s5D-qz-KaG" firstAttribute="leading" secondItem="6gj-Zf-OkH" secondAttribute="leading" id="q00-kb-lDS"/>
                                 </constraints>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IuU-7J-Bt4">
+                                <rect key="frame" x="0.0" y="635" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="1Cg-jT-KL5"/>
+                                </constraints>
+                                <state key="normal" title="Forgot your password?"/>
+                                <connections>
+                                    <action selector="forgotPassword:" destination="zg4-Gh-Hn4" eventType="touchUpInside" id="6bU-M1-iov"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="leading" secondItem="QCe-l3-i5f" secondAttribute="leading" id="4hD-Zn-fUw"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="top" secondItem="uo4-1A-ytC" secondAttribute="top" id="4im-TV-4Kv"/>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="leading" secondItem="QCe-l3-i5f" secondAttribute="leading" id="6fs-P0-zhf"/>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="top" secondItem="uo4-1A-ytC" secondAttribute="top" id="9bK-wv-Fsg"/>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="top" secondItem="uo4-1A-ytC" secondAttribute="top" id="Cmf-nS-VSG"/>
+                            <constraint firstItem="QCe-l3-i5f" firstAttribute="trailing" secondItem="IuU-7J-Bt4" secondAttribute="trailing" id="FAq-y3-D9O"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="trailing" secondItem="QCe-l3-i5f" secondAttribute="trailing" id="HUR-7t-VDq"/>
+                            <constraint firstItem="IuU-7J-Bt4" firstAttribute="leading" secondItem="QCe-l3-i5f" secondAttribute="leading" id="QOW-hz-fZa"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="top" secondItem="uo4-1A-ytC" secondAttribute="top" id="Qri-S5-Ya6"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="trailing" secondItem="QCe-l3-i5f" secondAttribute="trailing" id="SXh-Ny-bnK"/>
                             <constraint firstItem="6gj-Zf-OkH" firstAttribute="centerY" secondItem="uo4-1A-ytC" secondAttribute="centerY" id="VRM-xI-AdV"/>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="trailing" secondItem="QCe-l3-i5f" secondAttribute="trailing" id="YZf-ev-GTl"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="leading" secondItem="QCe-l3-i5f" secondAttribute="leading" id="ZWi-0K-pEB"/>
+                            <constraint firstItem="IuU-7J-Bt4" firstAttribute="top" secondItem="6gj-Zf-OkH" secondAttribute="bottom" constant="50" id="aG8-gb-bje"/>
                             <constraint firstItem="6gj-Zf-OkH" firstAttribute="centerX" secondItem="uo4-1A-ytC" secondAttribute="centerX" id="cVz-Of-xbd"/>
                             <constraint firstItem="6gj-Zf-OkH" firstAttribute="leading" secondItem="uo4-1A-ytC" secondAttribute="leading" constant="16" id="dNg-Ik-a9D"/>
+                            <constraint firstItem="3MY-vF-gXT" firstAttribute="leading" secondItem="QCe-l3-i5f" secondAttribute="leading" id="lcE-Eh-vGY"/>
                             <constraint firstItem="3MY-vF-gXT" firstAttribute="trailing" secondItem="QCe-l3-i5f" secondAttribute="trailing" id="oNo-Zw-NqC"/>
                             <constraint firstItem="QCe-l3-i5f" firstAttribute="trailing" secondItem="6gj-Zf-OkH" secondAttribute="trailing" constant="16" id="q8I-Tz-cAr"/>
                         </constraints>
