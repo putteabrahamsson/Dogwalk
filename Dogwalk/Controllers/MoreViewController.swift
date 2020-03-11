@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class MoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MoreViewController: UIViewController {
     
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -36,57 +36,6 @@ class MoreViewController: UIViewController, UITableViewDelegate, UITableViewData
         //Delegate & datasource
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    //Tableview properties
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionName[section]
-    }
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionName.count
-    }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return buttonArray[section].count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "moreCell", for: indexPath) as! MoreTableViewCell
-        
-        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
-        cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        
-        view.tintColor = UIColor.init(red: 0/256, green: 253/256, blue: 255/256, alpha: 1)
-        
-        let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.textColor = UIColor.black
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath {
-        case [0, 0]:
-            self.performSegue(withIdentifier: "group", sender: self)
-        case [1, 0]:
-            displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
-        case [2, 0]:
-            displayPasswordChangeAlert()
-        case [2, 1]:
-            logoutUser()
-        default:
-            break
-        }
     }
     
     //Displays a password change alert
@@ -146,5 +95,58 @@ class MoreViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         //Present the alert
         self.present(alert, animated: true)
+    }
+}
+
+//MARK: - Tableview properties
+extension MoreViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionName[section]
+    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sectionName.count
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return buttonArray[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.moreCell.rawValue, for: indexPath) as! MoreTableViewCell
+        
+        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
+        cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 75
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        view.tintColor = UIColor.init(red: 0/256, green: 253/256, blue: 255/256, alpha: 1)
+        
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel?.textColor = UIColor.black
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath {
+        case [0, 0]:
+            self.performSegue(withIdentifier: "group", sender: self)
+        case [1, 0]:
+            displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
+        case [2, 0]:
+            displayPasswordChangeAlert()
+        case [2, 1]:
+            logoutUser()
+        default:
+            break
+        }
     }
 }

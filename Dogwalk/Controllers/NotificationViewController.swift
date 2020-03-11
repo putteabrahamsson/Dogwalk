@@ -9,7 +9,7 @@
 import UIKit
 import WLEmptyState
 
-class NotificationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, WLEmptyStateDataSource {
+class NotificationViewController: UIViewController, WLEmptyStateDataSource {
    
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -74,37 +74,8 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             }
         }
     }
-
-    //Tableview properties
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if newInvite == 0 {
-            return 0
-        }
-        else{
-            return 1
-        }
-    }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "groupInviteCell", for: indexPath) as! NotificationTableViewCell
-        
-        //Set cell if dataArray is more than 0
-        if dataArray.count > 0{
-            let data = dataArray[indexPath.row]
-            cell.setCell(holder: data)
-        }
-        
-        //Add targets for tableview buttons
-        cell.acceptGroup.addTarget(self, action: #selector(acceptGroup), for: .touchUpInside)
-        cell.declineGroup.addTarget(self, action: #selector(denyGroup), for: .touchUpInside)
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 130
-    }
-    
+    //MARK: - Accept / Deny group
     //Accepting group invite
     @objc func acceptGroup(){
         databaseHandler.acceptGroupInvite(accept: true){
@@ -130,4 +101,35 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             tabItem.badgeValue = nil
         }
     }
+}
+
+//MARK: - Tableview properties
+extension NotificationViewController: UITableViewDelegate, UITableViewDataSource{
+       func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+           if newInvite == 0 {
+               return 0
+           }else{
+               return 1
+           }
+       }
+       
+       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+           let cell = tableView.dequeueReusableCell(withIdentifier: Cells.notificationCell.rawValue, for: indexPath) as! NotificationTableViewCell
+           
+           //Set cell if dataArray is more than 0
+           if dataArray.count > 0{
+               let data = dataArray[indexPath.row]
+               cell.setCell(holder: data)
+           }
+           
+           //Add targets for tableview buttons
+           cell.acceptGroup.addTarget(self, action: #selector(acceptGroup), for: .touchUpInside)
+           cell.declineGroup.addTarget(self, action: #selector(denyGroup), for: .touchUpInside)
+           
+           return cell
+       }
+       
+       func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+           return 130
+       }
 }

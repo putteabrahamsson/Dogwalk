@@ -8,7 +8,7 @@
 
 import Foundation
 
-//Struct for handeling API call
+//Struct for handeling the API call
 struct ResponseData : Codable{
     let name: String
     let sys: CountryData

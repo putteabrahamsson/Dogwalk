@@ -26,7 +26,7 @@ class DatabaseHandler{
         dbRef = Database.database().reference()
     }
     
-    //Create a new account
+    //MARK: - Create account
     func createAccount(email: String, firstName: String, completed: @escaping () -> ()){
         let uuid = UUID().uuidString
         
@@ -50,7 +50,7 @@ class DatabaseHandler{
         }
     }
     
-    //Retrieve data from Firestore
+    //MARK: - Retrieve user data
     func retrieveData(email: String, completed: @escaping () -> ()){
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { (snapshot, err) in
             if let err = err{
@@ -79,7 +79,7 @@ class DatabaseHandler{
         }
     }
     
-    // ------------------- Group properties -------------------
+    //MARK: - Group properties
     // Create a new group
     func createGroup(textField: String, uuid: String){
         db.collection("groups").document(uuid).collection("groupData").addDocument(data: [
@@ -98,7 +98,7 @@ class DatabaseHandler{
         }
     }
     
-    //Add the user to the group.
+    //MARK: - Add the user to group.
     func addUserToGroup(uuid: String){
         let email = defaults.string(forKey: "email")
         let firstname = defaults.string(forKey: "firstname")
@@ -112,7 +112,7 @@ class DatabaseHandler{
         }
     }
     
-    //Set user data to inGroup
+    //MARK: - Set user to ingroup
     func setInGroup(){
         let email = defaults.string(forKey: "email")
         db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
@@ -134,7 +134,7 @@ class DatabaseHandler{
         }
     }
     
-    // Add a dog to the group
+    //MARK: - Add dog to group
     func addDogToGroup(dogName: String, url: String, completed: @escaping () -> ()){
         let groupId = defaults.string(forKey: "groupId")
         
@@ -153,169 +153,7 @@ class DatabaseHandler{
         }
     }
     
-    //Retrieving dogs
-    func getDogs(completed: @escaping ([DogData]) -> ()){
-        let groupId = defaults.string(forKey: "groupId")
-        var tempArray:[DogData] = []
-        db.collection("groups").document(groupId!).collection("groupDogs").getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                for document in snapshot!.documents{
-                    let data = document.data()
-                    
-                    let dogName = data["dogName"] as! String
-                    let dogImageUrl = data["imageUrl"] as! String
-                    let documentId = document.documentID
-                    
-                    let txt = DogData.init(dogName: dogName, dogImageUrl: dogImageUrl, documentId: documentId)
-                    
-                    tempArray.append(txt)
-                    
-                    DispatchQueue.main.async {
-                        completed(tempArray)
-                    }
-                }
-            }
-        }
-        
-    }
-    
-    //Removing a dog
-    func removeDog(dogPath: String, completed: @escaping () -> ()){
-        let groupId = defaults.string(forKey: "groupId")
-        db.collection("groups").document(groupId!).collection("groupDogs").document(dogPath).delete { (err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                DispatchQueue.main.async {
-                    completed()
-                }
-            }
-        }
-    }
-    
-    //Get notifications
-    func getNotification(completed: @escaping (Int) -> ()){
-        let email = defaults.string(forKey: "email")
-    
-        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                for documents in snapshot!.documents{
-                    let data = documents.data()
-                    let newNotification = data["newInvite"] as! Int
-                    
-                    DispatchQueue.main.async {
-                        completed(newNotification)
-                    }
-                }
-            }
-        }
-    }
-    
-    // Retrieve the group name
-    func getGroupName(completed: @escaping (String) -> ()){
-        let groupId = defaults.string(forKey: "groupId")
-        db.collection("groups").document(groupId!).collection("groupData").getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                for document in snapshot!.documents{
-                    let data = document.data()
-                    let groupName = data["groupName"] as! String
-                    
-                    DispatchQueue.main.async {
-                        completed(groupName)
-                    }
-                }
-            }
-        }
-    }
-    
-    //Invite a user to the group
-    func inviteUserToGroup(email: String!, groupName: String!){
-        let newInviteId = defaults.string(forKey: "groupId")
-        
-        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                let data = snapshot!.documents.first
-                data?.reference.updateData([
-                    "newInviteId": newInviteId!,
-                    "newGroupName": groupName!,
-                    "newInvite": 1
-                    ], completion: { (err) in
-                        if let err = err{
-                            print(err.localizedDescription)
-                        }
-                })
-            }
-        }
-    }
-
-    //Display invite in notification
-    func getNotificationData(completed: @escaping ([NotificationHolder]) -> ()){
-        
-        let email = defaults.string(forKey: "email")
-        
-        var tempArray:[NotificationHolder] = []
-        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                for snap in snapshot!.documents{
-                    let data = snap.data()
-                    let groupName = data["newGroupName"] as! String
-                    let groupId = data["newInviteId"] as! String
-                    
-                    let txt = NotificationHolder.init(groupName: groupName, groupId: groupId)
-                    
-                    tempArray.append(txt)
-                    
-                    DispatchQueue.main.async {
-                        completed(tempArray)
-                    }
-                }
-            }
-        }
-    }
-    
-    //Retrieving members
-    func getMembers(completed: @escaping ([MemberData]) -> ()){
-        let groupId = defaults.string(forKey: "groupId")
-        
-        var tempArray:[MemberData] = []
-        db.collection("groups").document(groupId!).collection("groupUsers").getDocuments { (snapshot, err) in
-            if let err = err{
-                print(err.localizedDescription)
-            }
-            else{
-                for document in snapshot!.documents{
-                    let data = document.data()
-                    let firstName = data["firstname"] as! String
-                    let email = data["email"] as! String
-                    
-                    let txt = MemberData.init(firstName: firstName, email: email)
-                    tempArray.append(txt)
-                }
-                
-                DispatchQueue.main.async {
-                    completed(tempArray)
-                }
-            }
-        }
-    }
-    
-    //Accept/Deny group invite
+    //MARK: - Accept / deny group
     func acceptGroupInvite(accept: Bool!, completed: @escaping () -> ()){
         let email = defaults.string(forKey: "email")
         
@@ -369,7 +207,169 @@ class DatabaseHandler{
         }
     }
     
-    //Save a new walk
+    //MARK: - Get groupname
+    func getGroupName(completed: @escaping (String) -> ()){
+        let groupId = defaults.string(forKey: "groupId")
+        db.collection("groups").document(groupId!).collection("groupData").getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                for document in snapshot!.documents{
+                    let data = document.data()
+                    let groupName = data["groupName"] as! String
+                    
+                    DispatchQueue.main.async {
+                        completed(groupName)
+                    }
+                }
+            }
+        }
+    }
+    
+    //Invite a user to the group
+    func inviteUserToGroup(email: String!, groupName: String!){
+        let newInviteId = defaults.string(forKey: "groupId")
+        
+        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                let data = snapshot!.documents.first
+                data?.reference.updateData([
+                    "newInviteId": newInviteId!,
+                    "newGroupName": groupName!,
+                    "newInvite": 1
+                    ], completion: { (err) in
+                        if let err = err{
+                            print(err.localizedDescription)
+                        }
+                })
+            }
+        }
+    }
+    
+    //MARK: - Retreive dogs
+    func getDogs(completed: @escaping ([DogData]) -> ()){
+        let groupId = defaults.string(forKey: "groupId")
+        var tempArray:[DogData] = []
+        db.collection("groups").document(groupId!).collection("groupDogs").getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                for document in snapshot!.documents{
+                    let data = document.data()
+                    
+                    let dogName = data["dogName"] as! String
+                    let dogImageUrl = data["imageUrl"] as! String
+                    let documentId = document.documentID
+                    
+                    let txt = DogData.init(dogName: dogName, dogImageUrl: dogImageUrl, documentId: documentId)
+                    
+                    tempArray.append(txt)
+                    
+                    DispatchQueue.main.async {
+                        completed(tempArray)
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    //MARK: - Remove dog
+    func removeDog(dogPath: String, completed: @escaping () -> ()){
+        let groupId = defaults.string(forKey: "groupId")
+        db.collection("groups").document(groupId!).collection("groupDogs").document(dogPath).delete { (err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                DispatchQueue.main.async {
+                    completed()
+                }
+            }
+        }
+    }
+    
+    //MARK: - Get notifications
+    func getNotification(completed: @escaping (Int) -> ()){
+        let email = defaults.string(forKey: "email")
+    
+        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                for documents in snapshot!.documents{
+                    let data = documents.data()
+                    let newNotification = data["newInvite"] as! Int
+                    
+                    DispatchQueue.main.async {
+                        completed(newNotification)
+                    }
+                }
+            }
+        }
+    }
+
+    //Display invite in notification
+    func getNotificationData(completed: @escaping ([NotificationHolder]) -> ()){
+        
+        let email = defaults.string(forKey: "email")
+        
+        var tempArray:[NotificationHolder] = []
+        db.collection("users").whereField("email", isEqualTo: email!).getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                for snap in snapshot!.documents{
+                    let data = snap.data()
+                    let groupName = data["newGroupName"] as! String
+                    let groupId = data["newInviteId"] as! String
+                    
+                    let txt = NotificationHolder.init(groupName: groupName, groupId: groupId)
+                    
+                    tempArray.append(txt)
+                    
+                    DispatchQueue.main.async {
+                        completed(tempArray)
+                    }
+                }
+            }
+        }
+    }
+    
+    //MARK: - Get members
+    func getMembers(completed: @escaping ([MemberData]) -> ()){
+        let groupId = defaults.string(forKey: "groupId")
+        
+        var tempArray:[MemberData] = []
+        db.collection("groups").document(groupId!).collection("groupUsers").getDocuments { (snapshot, err) in
+            if let err = err{
+                print(err.localizedDescription)
+            }
+            else{
+                for document in snapshot!.documents{
+                    let data = document.data()
+                    let firstName = data["firstname"] as! String
+                    let email = data["email"] as! String
+                    
+                    let txt = MemberData.init(firstName: firstName, email: email)
+                    tempArray.append(txt)
+                }
+                
+                DispatchQueue.main.async {
+                    completed(tempArray)
+                }
+            }
+        }
+    }
+    
+    //MARK: - Save a new walk
     func saveNewWalk(dog: String, person: String, action: String, date: String, dogImage: String, longitude: Double, latitude: Double, completed: @escaping () -> ()){
 
         let groupId = defaults.string(forKey: "groupId")
@@ -391,7 +391,7 @@ class DatabaseHandler{
         }
     }
     
-    //Get all walks
+    //MARK: - Get all walks
     func getWalks(completed: @escaping ([HistoryData], [HistoryData]) -> ()){
         let groupId = defaults.string(forKey: "groupId")
         

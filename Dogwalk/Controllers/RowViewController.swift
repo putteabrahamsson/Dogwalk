@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RowViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class RowViewController: UIViewController {
 
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -23,18 +23,29 @@ class RowViewController: UIViewController, UITableViewDelegate, UITableViewDataS
         tableView.dataSource = self
     }
     
-    //Tableview properties
+    //Closing the current viewcontroller
+    @IBAction func navigateBack(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    //Share a walk with your friends
+    @IBAction func shareWalk(_ sender: Any) {
+        displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
+    }
+}
+
+//MARK: - Tableview properties
+extension RowViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "rowCell", for: indexPath) as! RowTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.rowCell.rawValue, for: indexPath) as! RowTableViewCell
         
         //Download image data
         let imagePath = dataArray[indexPath.row].dogImage
         cell.dogImage.downloadImages(from: imagePath as NSString)
-        //cell.dogImage.downloaded(from: dataArray[indexPath.row].dogImage)
         
         //Get latitude & longitude from dataArray
         let latitude = dataArray[indexPath.row].latitude
@@ -54,7 +65,7 @@ class RowViewController: UIViewController, UITableViewDelegate, UITableViewDataS
         }
         else{
             //If no location were found
-            cell.location.text = "No location was found.."
+            cell.location.text = "No location were found.."
         }
         
         //Set cells of other
@@ -68,15 +79,5 @@ class RowViewController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 996
-    }
-    
-    //Closing the current viewcontroller
-    @IBAction func navigateBack(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    //Share a walk with your friends
-    @IBAction func shareWalk(_ sender: Any) {
-        displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
     }
 }

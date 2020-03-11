@@ -9,7 +9,7 @@
 import UIKit
 import WLEmptyState
 
-class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, WLEmptyStateDataSource {
+class HistoryViewController: UIViewController, WLEmptyStateDataSource {
 
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -29,8 +29,8 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         //Calling the function to create the arrays
         createArray()
-        
-        //tableView.emptyStateDataSource = self
+
+        tableView.emptyStateDataSource = self
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -65,7 +65,24 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    //Tableview properties
+    //Preparing for the segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let indexPath = tableView.indexPathForSelectedRow{
+            let vc = segue.destination as! RowViewController
+            
+            //Pass the correct data to the RowViewController
+            if indexPath.section == 0{
+                vc.dataArray = [todayData[indexPath.row]]
+            }
+            else{
+                vc.dataArray = [dataArray[indexPath.row]]
+            }
+        }
+    }
+}
+
+//MARK: - Tableview properties
+extension HistoryViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sections[section]
     }
@@ -84,12 +101,11 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "historyCell", for: indexPath) as! HistoryTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.historyCell.rawValue, for: indexPath) as! HistoryTableViewCell
         
         if indexPath.section == 0{
             //Prior the download of the images
             let dogImagePath = todayData[indexPath.row].dogImage
-            //cell.dogImage.downloaded(from: dogImagePath)
             cell.dogImage.downloadImages(from: dogImagePath as NSString)
             
             //Change the format of dateTime
@@ -109,7 +125,6 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         else{
             //Prior the download of the images
             let dogImagePath = dataArray[indexPath.row].dogImage
-            //cell.dogImage.downloaded(from: dogImagePath)
             cell.dogImage.downloadImages(from: dogImagePath as NSString)
             
             //Change the format of dateTime
@@ -155,20 +170,5 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //Navigate to RowViewController
         self.performSegue(withIdentifier: "showRow", sender: self)
-    }
-    
-    //Preparing for the segue
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let indexPath = tableView.indexPathForSelectedRow{
-            let vc = segue.destination as! RowViewController
-            
-            //Pass the correct data to the RowViewController
-            if indexPath.section == 0{
-                vc.dataArray = [todayData[indexPath.row]]
-            }
-            else{
-                vc.dataArray = [dataArray[indexPath.row]]
-            }
-        }
     }
 }

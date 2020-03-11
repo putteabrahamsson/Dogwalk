@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 import TransitionButton
 
-class DogsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class DogsViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -28,33 +28,6 @@ class DogsViewController: UIViewController, UITableViewDelegate, UITableViewData
         //Delegate & datasource
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    //Tableview properties
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "dogCell", for: indexPath) as! DogsTableViewCell
-         
-        cell.saveDog.layer.cornerRadius = 5.0
-        cell.dogName.delegate = self
-        
-        //Display image if imageArray is not empty.
-        if imageArray.count > 0 {
-            cell.dogImage.image = imageArray[0]
-        }
-        
-        //Targets for the buttons
-        cell.addDogImage.addTarget(self, action: #selector(addImage), for: .touchUpInside)
-        cell.saveDog.addTarget(self, action: #selector(saveDog), for: .touchUpInside)
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 670
     }
     
     //Display the image library
@@ -143,7 +116,6 @@ class DogsViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.cellForRow(at: indexPath) as! DogsTableViewCell
         
         databaseHandler.addDogToGroup(dogName: cell.dogName.text!, url: url){
-            
             cell.saveDog.stopAnimation(animationStyle: .normal, revertAfterDelay: 0.2) {
                 self.dismiss(animated: true, completion: nil)
             }
@@ -159,5 +131,34 @@ class DogsViewController: UIViewController, UITableViewDelegate, UITableViewData
     //Navigate back to previous viewcontroller
     @IBAction func navigateBack(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK: - Tableview properties
+extension DogsViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.dogCell.rawValue, for: indexPath) as! DogsTableViewCell
+         
+        cell.saveDog.layer.cornerRadius = 5.0
+        cell.dogName.delegate = self
+        
+        //Display image if imageArray is not empty.
+        if imageArray.count > 0 {
+            cell.dogImage.image = imageArray[0]
+        }
+        
+        //Targets for the buttons
+        cell.addDogImage.addTarget(self, action: #selector(addImage), for: .touchUpInside)
+        cell.saveDog.addTarget(self, action: #selector(saveDog), for: .touchUpInside)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 670
     }
 }

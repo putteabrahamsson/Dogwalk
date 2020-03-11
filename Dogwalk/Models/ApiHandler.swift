@@ -13,7 +13,7 @@ class ApiHandler{
     //Create an array for holding our locations
     var location:[ResponseData] = []
     
-    //Get the location
+    //MARK: - Get user location from API
     func getLocation(url: String, completed: @escaping ([ResponseData]) -> ()){
         
         guard let url = URL(string: url) else{

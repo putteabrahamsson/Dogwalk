@@ -12,6 +12,7 @@ import Firebase
 //Image caching
 let imageCache = NSCache<AnyObject, AnyObject>()
 
+//MARK: - Display alert
 //Extension for displaying an alert view.
 extension UIViewController{
     
@@ -29,6 +30,7 @@ extension UIViewController{
     }
 }
 
+//MARK: - Image downloading
 //Extension for downloading images from a website.
 extension UIImageView {
     func downloadImages(from urlString: NSString){

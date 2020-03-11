@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GroupViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource {
+class GroupViewController: UIViewController {
 
     //Outlets
     @IBOutlet weak var collectionView: UICollectionView!
@@ -83,99 +83,6 @@ class GroupViewController: UIViewController, UICollectionViewDelegate, UICollect
         //Retrieve all members
         databaseHandler.getMembers { (resultArray) in
             self.members = resultArray
-        }
-    }
-    
-    /* Collectionview properties */
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dogArray.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "groupCell", for: indexPath) as! GroupCollectionViewCell
-        
-        //Sets the cell
-        let imagePath = dogArray[indexPath.row].dogImageUrl
-        cell.dogImage.downloadImages(from: imagePath as NSString)
-        
-        cell.dogName.text = dogArray[indexPath.row].dogName
-        cell.documentId = dogArray[indexPath.row].documentId
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        removeDogAlert(indexPath: indexPath)
-    }
-    
-    /* Tableview properties */
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionArray[section]
-    }
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionArray.count
-    }
-        
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return buttonArray[section].count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "groupTableCell", for: indexPath) as! GroupTableViewCell
-        
-        //Sets the cell
-        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
-        cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if inGroup{
-            if indexPath == [0, 0]{
-                return 0 //Hide create group button
-            }
-        }
-        else if !inGroup{
-            if indexPath == [0, 1]{
-                return 0 //Hide invite button
-            }
-        }
-        return 70
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        view.tintColor = UIColor.init(red: 0/256, green: 253/256, blue: 255/256, alpha: 1)
-    }
-        
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath {
-        case [0, 0]:
-            createGroup()
-        case [0, 1]:
-            inviteUser()
-        case [1, 0]:
-            if inGroup{
-                self.performSegue(withIdentifier: "addDog", sender: self)
-            }
-            else{
-                requiredGroup()
-            }
-        case [1, 1]:
-            if inGroup{
-                self.performSegue(withIdentifier: "checkMembers", sender: self)
-            }
-            else{
-                requiredGroup()
-            }
-    
-        default:
-            print("None")
         }
     }
     
@@ -290,5 +197,111 @@ class GroupViewController: UIViewController, UICollectionViewDelegate, UICollect
     // Close the current viewcontroller
     @IBAction func closeCurrentVc(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK: - Tableview properties
+extension GroupViewController: UITableViewDelegate, UITableViewDataSource{
+    //Title for header in section
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionArray[section]
+    }
+    
+    //Number of sections
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sectionArray.count
+    }
+    
+    //Number of rows in section
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return buttonArray[section].count
+    }
+    
+    //Cell for row at indexPath
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.groupTableCell.rawValue, for: indexPath) as! GroupTableViewCell
+        
+        //Sets the cell
+        cell.buttonImage.image = imageArray[indexPath.section][indexPath.row]
+        cell.buttonName.text = buttonArray[indexPath.section][indexPath.row]
+        
+        return cell
+    }
+    
+    //Height for row at indexPath
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if inGroup{
+            if indexPath == [0, 0]{
+                return 0 //Hide create group button
+            }
+        }
+        else if !inGroup{
+            if indexPath == [0, 1]{
+                return 0 //Hide invite button
+            }
+        }
+        return 70
+    }
+    
+    //Height for header in section
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    //Will display header view
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        view.tintColor = UIColor.init(red: 0/256, green: 253/256, blue: 255/256, alpha: 1)
+    }
+    
+    //Did select row at indexPath
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath {
+        case [0, 0]:
+            createGroup()
+        case [0, 1]:
+            inviteUser()
+        case [1, 0]:
+            if inGroup{
+                self.performSegue(withIdentifier: "addDog", sender: self)
+            }
+            else{
+                requiredGroup()
+            }
+        case [1, 1]:
+            if inGroup{
+                self.performSegue(withIdentifier: "checkMembers", sender: self)
+            }
+            else{
+                requiredGroup()
+            }
+    
+        default:
+            print("None")
+        }
+    }
+}
+
+//MARK: - Collectionview properties
+extension GroupViewController: UICollectionViewDelegate, UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return dogArray.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cells.groupCollectionCell.rawValue, for: indexPath) as! GroupCollectionViewCell
+        
+        //Sets the cell
+        let imagePath = dogArray[indexPath.row].dogImageUrl
+        cell.dogImage.downloadImages(from: imagePath as NSString)
+        
+        cell.dogName.text = dogArray[indexPath.row].dogName
+        cell.documentId = dogArray[indexPath.row].documentId
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        removeDogAlert(indexPath: indexPath)
     }
 }

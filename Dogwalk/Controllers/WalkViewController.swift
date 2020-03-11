@@ -10,7 +10,7 @@ import UIKit
 import TransitionButton
 import CoreLocation
 
-class WalkViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
+class WalkViewController: UIViewController, CLLocationManagerDelegate {
    
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -65,7 +65,7 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         //Pre-sets the tableview cell
         setCurrentDateTime()
-        person = defaults.string(forKey: "person")
+        person = defaults.string(forKey: "firstname")
         
         //Reload tableview
         tableView.reloadData()
@@ -106,40 +106,8 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
         dateTime = formatter.string(from: self.datePicker.date)
     }
-
-    //Tableview properties
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "dogwalkCell", for: indexPath) as! WalkTableViewCell
-        
-        //Set cells
-        cell.dog.text = dog
-        cell.person.text = person
-        cell.action.text = action
-        cell.dateTime.text = dateTime
-        
-        //Rounded buttons
-        cell.saveButton.layer.cornerRadius = 5.0
-        
-        //Add target for textfields
-        cell.dog.addTarget(self, action: #selector(setDog(textfield:)), for: .editingDidBegin)
-        cell.person.addTarget(self, action: #selector(setPerson(textfield:)), for: .editingDidBegin)
-        cell.action.addTarget(self, action: #selector(setAction(textfield:)), for: .editingDidBegin)
-        cell.dateTime.addTarget(self, action: #selector(setDateTime(textfield:)), for: .editingDidBegin)
-        
-        //Add target for save button.
-        cell.saveButton.addTarget(self, action: #selector(saveWalk), for: .touchUpInside)
-        
-        return cell
-    }
-            
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 650
-    }
-    
+    //MARK: - Tableview targets
     //Set data for textfields (Tableview targets)
     @objc func setDog(textfield: UITextField){
         setTextfieldAsView(textfield: textfield)
@@ -168,7 +136,7 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         createAlertWithDatePicker()
     }
     
-    //Create an alert with a pickerview
+    //MARK: - Pickerview alert
     func createAlertWithPickerView(title: String){
         
         //Sets ViewController with size
@@ -212,7 +180,7 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.present(alert, animated: true)
     }
     
-    //Create an alert with a datepicker
+    //MARK: - Pickerview with date
     func createAlertWithDatePicker(){
         
         //Sets ViewController with size
@@ -263,46 +231,10 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         else if personBool{
             person = self.memberArray[x].firstName
-            
-            //Save person in userdefaults
-            defaults.set(person!, forKey: "person")
-            defaults.synchronize()
         }
         else if actionBool{
             action = self.actionArray[x]
         }
-    }
-    
-    //PickerView properties
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if dogBool{
-            return dogArray.count
-        }
-        else if personBool{
-            return memberArray.count
-        }
-        else if actionBool{
-            return actionArray.count
-        }
-        return 0
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if dogBool{
-            dogImage = dogArray[row].dogImageUrl
-            return dogArray[row].dogName
-        }
-        else if personBool{
-            return memberArray[row].firstName
-        }
-        else if actionBool{
-            return actionArray[row]
-        }
-        return ""
     }
     
     //Save a new walk
@@ -329,6 +261,7 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    //MARK: - Save walk
     //Saving the walk to the database
     func onSavingRow(completed: @escaping () -> ()){
         
@@ -381,6 +314,7 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    //MARK: - Map and messages
     //Will navigate to the mapView for creating a walking route.
     @IBAction func mapButtonTapped(_ sender: Any) {
         displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
@@ -390,4 +324,73 @@ class WalkViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBAction func walkMessageTapped(_ sender: Any) {
         displayMessageAlertView(title: "Ops!", message: "Will be available soon!", actionTitle: "OK")
     }
+}
+
+//MARK: - Tableview properties
+extension WalkViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cells.dogwalkCell.rawValue, for: indexPath) as! WalkTableViewCell
+        
+        //Set cells
+        cell.dog.text = dog
+        cell.person.text = person
+        cell.action.text = action
+        cell.dateTime.text = dateTime
+        
+        //Rounded buttons
+        cell.saveButton.layer.cornerRadius = 5.0
+        
+        //Add target for textfields
+        cell.dog.addTarget(self, action: #selector(setDog(textfield:)), for: .editingDidBegin)
+        cell.person.addTarget(self, action: #selector(setPerson(textfield:)), for: .editingDidBegin)
+        cell.action.addTarget(self, action: #selector(setAction(textfield:)), for: .editingDidBegin)
+        cell.dateTime.addTarget(self, action: #selector(setDateTime(textfield:)), for: .editingDidBegin)
+        
+        //Add target for save button.
+        cell.saveButton.addTarget(self, action: #selector(saveWalk), for: .touchUpInside)
+        
+        return cell
+    }
+            
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 650
+    }
+}
+
+//MARK: - Pickerview properties
+extension WalkViewController: UIPickerViewDelegate, UIPickerViewDataSource{
+       func numberOfComponents(in pickerView: UIPickerView) -> Int {
+           return 1
+       }
+       
+       func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+           if dogBool{
+               return dogArray.count
+           }
+           else if personBool{
+               return memberArray.count
+           }
+           else if actionBool{
+               return actionArray.count
+           }
+           return 0
+       }
+       
+       func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+           if dogBool{
+               dogImage = dogArray[row].dogImageUrl
+               return dogArray[row].dogName
+           }
+           else if personBool{
+               return memberArray[row].firstName
+           }
+           else if actionBool{
+               return actionArray[row]
+           }
+           return ""
+       }
 }
