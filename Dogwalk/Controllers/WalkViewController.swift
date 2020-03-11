@@ -57,15 +57,20 @@ class WalkViewController: UIViewController, CLLocationManagerDelegate {
     
     //When the view appears.
     override func viewDidAppear(_ animated: Bool) {
-        //Create the arrays
-        createArrays()
+        //Check if user is in a group
+        let inGroup = defaults.bool(forKey: "inGroup")
+        if inGroup{
+            person = defaults.string(forKey: "firstname")
+            
+            //Create the arrays
+            createArrays()
+        }
         
         //Get notifications
         getNotification()
         
         //Pre-sets the tableview cell
         setCurrentDateTime()
-        person = defaults.string(forKey: "firstname")
         
         //Reload tableview
         tableView.reloadData()
@@ -227,10 +232,14 @@ class WalkViewController: UIViewController, CLLocationManagerDelegate {
         let x = self.pickerView.selectedRow(inComponent: 0)
         
         if dogBool{
-            dog = self.dogArray[x].dogName
+            if !dogArray.isEmpty{
+                dog = self.dogArray[x].dogName
+            }
         }
         else if personBool{
-            person = self.memberArray[x].firstName
+            if !memberArray.isEmpty{
+                person = self.memberArray[x].firstName
+            }
         }
         else if actionBool{
             action = self.actionArray[x]

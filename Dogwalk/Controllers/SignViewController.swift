@@ -29,6 +29,7 @@ class SignViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         //Delegate for textfields
         email.delegate = self
@@ -126,8 +127,7 @@ class SignViewController: UIViewController, UITextFieldDelegate {
                 else{
                     //Add user details to Firebase
                     self.databaseHandler.createAccount(email: self.email.text!, firstName: self.firstName.text!){
-                        self.stopAnimateButton()
-                        
+                                                
                         //Login user after registration
                         self.handleLogin()
                     }
